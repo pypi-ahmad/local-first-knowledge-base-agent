@@ -3,6 +3,7 @@ name = "local-first-knowledge-base-agent"
 version = "0.1.0"
 description = "A local-first, privacy-preserving personal knowledge base agent built with LangGraph and Streamlit"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.14"
 dependencies = [
     "dateparser>=1.4.2",

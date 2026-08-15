@@ -6,6 +6,7 @@ A personal, privacy-first knowledge base agent that indexes your notes, code, PD
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b)
 ![LangGraph](https://img.shields.io/badge/orchestration-LangGraph-1c3c3c)
 ![Local-first](https://img.shields.io/badge/storage-local--first-green)
+![License: MIT](https://img.shields.io/badge/license-MIT-yellow)
 
 **Repository:** https://github.com/pypi-ahmad/local-first-knowledge-base-agent
 
@@ -197,6 +198,10 @@ These are deliberate scope decisions, not oversights — noted here as upgrade p
 - Add tree-sitter for structure-aware chunking of non-Python languages.
 - Replace on-demand digests with a real scheduled job (Windows Task Scheduler / cron).
 - Persist the BM25 index instead of rebuilding it per query, if the corpus grows large.
+
+## License
+
+[MIT](LICENSE)
 
 ## Acknowledgements
 
