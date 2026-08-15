@@ -1,0 +1,23 @@
+[project]
+name = "local-first-knowledge-base-agent"
+version = "0.1.0"
+description = "A local-first, privacy-preserving personal knowledge base agent built with LangGraph and Streamlit"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "dateparser>=1.4.2",
+    "faster-whisper>=1.2.1",
+    "langchain-chroma>=1.1.0",
+    "langchain-core>=1.5.5",
+    "langchain-google-genai>=4.3.4",
+    "langchain-ollama>=1.1.0",
+    "langchain-openai>=1.5.1",
+    "langgraph>=1.2.11",
+    "langgraph-checkpoint-sqlite>=3.1.1",
+    "networkx>=3.6.1",
+    "pymupdf>=1.28.2",
+    "python-dotenv>=1.2.2",
+    "rank-bm25>=0.2.2",
+    "streamlit>=1.61.1",
+    "watchdog>=6.0.0",
+]
