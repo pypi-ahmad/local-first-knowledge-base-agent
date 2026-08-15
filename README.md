@@ -7,6 +7,8 @@ A personal, privacy-first knowledge base agent that indexes your notes, code, PD
 ![LangGraph](https://img.shields.io/badge/orchestration-LangGraph-1c3c3c)
 ![Local-first](https://img.shields.io/badge/storage-local--first-green)
 
+**Repository:** https://github.com/pypi-ahmad/local-first-knowledge-base-agent
+
 ## Features
 
 **Indexing**
