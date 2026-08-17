@@ -10,6 +10,23 @@ A personal, privacy-first knowledge base agent that indexes your notes, code, PD
 
 **Repository:** https://github.com/pypi-ahmad/local-first-knowledge-base-agent
 
+## Contents
+
+- [Features](#features)
+- [Demo / Screenshots](#demo--screenshots)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Installation & setup](#installation--setup)
+- [Environment variables](#environment-variables)
+- [Usage](#usage)
+- [How it works](#how-it-works)
+- [Configuration options](#configuration-options)
+- [Examples](#examples)
+- [Future improvements](#future-improvements)
+- [Documentation](#documentation)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Features
 
 **Indexing**
@@ -199,6 +216,14 @@ These are deliberate scope decisions, not oversights — noted here as upgrade p
 - Replace on-demand digests with a real scheduled job (Windows Task Scheduler / cron).
 - Persist the BM25 index instead of rebuilding it per query, if the corpus grows large.
 
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Cited technical deep-dive: tech stack, subsystems, data flow, and inferred design decisions |
+| [USAGE.md](USAGE.md) | Step-by-step walkthrough of every tab and feature, plus a troubleshooting table |
+| [LICENSE](LICENSE) | MIT license terms |
+
 ## License
 
 [MIT](LICENSE)
@@ -206,3 +231,5 @@ These are deliberate scope decisions, not oversights — noted here as upgrade p
 ## Acknowledgements
 
 Built on [LangGraph](https://github.com/langchain-ai/langgraph), [Streamlit](https://streamlit.io), [Chroma](https://www.trychroma.com/), and [Ollama](https://ollama.com).
+
+<p align="center">Made with ❤️ by Ahmad Mujtaba</p>
