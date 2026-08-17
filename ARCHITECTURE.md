@@ -95,15 +95,15 @@ created on import if missing.
 ## EOL / dead-dependency scan
 
 Nothing EOL `[INFERRED — no version pins exist in pyproject.toml to check
-against advisory databases]`. One dead-config item found by cross-checking
-`config.py` against every other module: `PRICING_USD_PER_1M`
-(`config.py`) includes `sonnet-5` and `grok-4.6` entries, but neither model
-appears in `config.PROVIDERS` (`ollama`, `openai_compatible`, `agnes`,
-`gemini`) or in any provider's model list (`agents/models.py:58-67`) —
-`app.py:95-99`'s "Pricing reference" expander renders these two phantom
-entries in its table even though a user can never actually select them.
-Confirmed live via `grep` for `sonnet-5|grok-4.6` across every `.py` file —
-only `config.py` matches.
+against advisory databases]`. `PRICING_USD_PER_1M` (`config.py`) includes
+`sonnet-5` and `grok-4.6` entries that don't appear in `config.PROVIDERS`
+(`ollama`, `openai_compatible`, `agnes`, `gemini`) or in any provider's
+model list (`agents/models.py:58-67`) — confirmed via `grep` for
+`sonnet-5|grok-4.6` across every `.py` file (only `config.py` matches).
+`app.py:95-99`'s "Pricing reference" expander renders these two entries in
+its table even though a user can never actually select them. This is
+intentional, not dead config: they're placeholders for Anthropic/xAI
+provider support not yet wired up (confirmed with the maintainer).
 
 ## Data, APIs, background jobs, CI/CD, testing
 
@@ -255,7 +255,7 @@ for retrieval" (`agents/extraction.py:6-9`).
 | LangGraph pipeline structure, node responsibilities | High — read directly from `graph.py`, `agents/nodes.py` |
 | No CI/tests/lint config exists | High — confirmed by directory listing and `pyproject.toml` contents, not inference |
 | Hybrid retrieval and graph-augmented retrieval mechanics | High — read directly from `retriever/keyword.py`, `retriever/graph_rag.py`, `db/graph_store.py` |
-| `sonnet-5`/`grok-4.6` being unreachable dead config | High — confirmed via `grep` across every `.py` file, not inference |
+| `sonnet-5`/`grok-4.6` being unreachable-but-intentional placeholders | High — unreachability confirmed via `grep`; intent confirmed with the maintainer |
 | Incremental indexing correctness under concurrent/interrupted runs | Inferred — no explicit locking observed in `db/metadata.py`/`db/graph_store.py`; each SQLite connection is opened and closed per call, which is safe for the single-process Streamlit deployment this app targets but not analyzed for concurrent writers |
 
 ## Footnotes
