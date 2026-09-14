@@ -5,6 +5,8 @@ ponytail: digests are generated on demand (a UI button), not on a real OS
 scheduler — Streamlit has no background cron. Conflict detection only compares
 the two most recent decisions per entity, bounding LLM calls regardless of
 how many decisions accumulate for that entity.
+
+Read db/annotations.py and db/graph_store.py next for the data these read.
 """
 
 from __future__ import annotations

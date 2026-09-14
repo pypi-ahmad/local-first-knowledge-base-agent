@@ -1,4 +1,5 @@
-"""Export answers/reports as Markdown or PDF. Pure formatting — no LLM calls.
+"""Export answers/reports as Markdown or PDF. Pure formatting — no LLM calls
+or DB access belong here. Called from app.py's download buttons.
 
 ponytail: PDF via PyMuPDF's Story/DocumentWriter (already a project dependency
 for PDF reading) instead of adding reportlab/weasyprint for the write side too.

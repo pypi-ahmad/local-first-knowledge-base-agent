@@ -2,6 +2,8 @@
 
 The History file is a live SQLite DB the browser keeps locked, so we copy
 it to a temp file before opening. Both browsers share the same schema.
+
+Read pipeline.py next — index_browser_history is the sole caller.
 """
 
 from __future__ import annotations

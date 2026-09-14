@@ -6,6 +6,8 @@ ponytail: no dedicated NER model (spaCy etc.) — reuses the same local LLM
 already required for generation. Silently degrades to empty results if the
 model doesn't support structured output well; extraction is a bonus layer,
 not load-bearing for retrieval.
+
+Read indexer/pipeline.py next — `_extract_and_store_graph` is the sole caller.
 """
 
 from __future__ import annotations

@@ -1,4 +1,8 @@
-"""Local Chroma vector store: add/delete/search over indexed chunks."""
+"""Local Chroma vector store: add/delete/search over indexed chunks.
+
+Must not apply business-level ranking beyond raw similarity — hybrid scoring
+and re-ranking live in keyword.py and rerank.py. Read keyword.py next.
+"""
 
 from __future__ import annotations
 
@@ -30,6 +34,8 @@ def delete_by_source(vs: Chroma, source: str) -> None:
 
 
 def clear_all(vs: Chroma) -> None:
+    # include=[]: ids are always returned regardless of `include`, and we only
+    # need ids to delete — skip fetching documents/embeddings/metadatas too.
     existing = vs.get(include=[])
     ids = existing.get("ids") or []
     if ids:

@@ -1,5 +1,8 @@
 """Decisions/action-items/open-questions extracted during indexing, plus
 pinned Q&A answers from the chat UI.
+
+Read agents/proactive.py next for how these rows are surfaced (digests,
+forgotten-question and conflicting-decision detection).
 """
 
 from __future__ import annotations

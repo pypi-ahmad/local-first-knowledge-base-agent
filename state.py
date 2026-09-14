@@ -1,4 +1,8 @@
-"""Shared LangGraph state schema for the knowledge-base agent graph."""
+"""Shared LangGraph state schema for the knowledge-base agent graph.
+
+Pure data shapes only — no behavior belongs here. Read graph.py next to see
+how a KBState instance flows through the node pipeline in agents/nodes.py.
+"""
 
 from __future__ import annotations
 

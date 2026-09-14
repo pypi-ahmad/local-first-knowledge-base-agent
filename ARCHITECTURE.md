@@ -11,8 +11,8 @@ A local, single-user Streamlit application that indexes personal files
 (notes, code, PDFs, images, audio, browser history) and answers questions
 about them through a 6-node LangGraph conversational agent, using a hybrid
 of vector search, BM25 keyword search, and a local knowledge graph
-(`README.md:3`). Everything — the vector store, the metadata database, the
-knowledge graph, and conversation memory — is SQLite/Chroma persisted on
+(`README.md:3`). Everything (the vector store, the metadata database, the
+knowledge graph, and conversation memory) is SQLite/Chroma persisted on
 disk; nothing is hosted.
 
 ## Tech stack
@@ -32,12 +32,12 @@ disk; nothing is hosted.
 
 ## Entry point
 
-`uv run streamlit run app.py --server.port 8943`, or `run.cmd` (Windows
-one-click: installs `uv` if missing, `uv sync` — creates `.venv` in the
-project root, creates `.env`, launches). `app.py` is the only UI entry
+`uv run streamlit run app.py --server.port 8943`, or `run.cmd` on Windows,
+which installs `uv` if missing, runs `uv sync` (creating `.venv` in the
+project root), creates `.env`, and launches. `app.py` is the only UI entry
 point; there is no CLI or API entry point.
 
-## Commands & Verification Inventory
+## Commands & verification inventory
 
 | Command | Purpose | Evidence |
 |---|---|---|
@@ -50,7 +50,7 @@ point; there is no CLI or API entry point.
 directory, no `.github/workflows/` anywhere in the checkout (confirmed by
 directory listing, 2026-08-17). Four modules (`db/graph_store.py`,
 `db/metadata.py`, and others) do carry a `_demo()` self-check function run
-via `if __name__ == "__main__":` — informal, not collected by any test
+via `if __name__ == "__main__":`, informal and not collected by any test
 runner.
 
 ## Directory layout
@@ -87,18 +87,18 @@ runner.
 
 Local-only; no container, no CI runner image, no deployed service.
 `README.md` badges Python 3.14+; no `.python-version`/`runtime.txt` pins an
-exact interpreter in this checkout — the floor is asserted only in a
+exact interpreter in this checkout; the floor is asserted only in a
 README badge, not enforced anywhere. All persistence (`CHROMA_DIR`,
 `METADATA_DB_PATH`, checkpoint DB) lives under `db/data/` (`config.py:13-16`),
 created on import if missing.
 
 ## EOL / dead-dependency scan
 
-Nothing EOL `[INFERRED — no version pins exist in pyproject.toml to check
+Nothing EOL `[INFERRED: no version pins exist in pyproject.toml to check
 against advisory databases]`. `PRICING_USD_PER_1M` (`config.py`) includes
 `sonnet-5` and `grok-4.6` entries that don't appear in `config.PROVIDERS`
 (`ollama`, `openai_compatible`, `agnes`, `gemini`) or in any provider's
-model list (`agents/models.py:58-67`) — confirmed via `grep` for
+model list (`agents/models.py:58-67`); confirmed via `grep` for
 `sonnet-5|grok-4.6` across every `.py` file (only `config.py` matches).
 `app.py:95-99`'s "Pricing reference" expander renders these two entries in
 its table even though a user can never actually select them. This is
@@ -109,7 +109,7 @@ provider support not yet wired up (confirmed with the maintainer).
 
 - **Data:** Chroma vector store (`db/data/chroma`), a `metadata.sqlite3`
   (file-tracking + knowledge-graph entities/relations + annotations, all
-  three schemas coexist in the same file — `db/metadata.py:17-31`,
+  three schemas coexist in the same file, per `db/metadata.py:17-31` and
   `db/graph_store.py:19-36`), and a separate `checkpoints.sqlite3` for
   conversation memory (`db/checkpointer.py:16`).
 - **APIs:** none exposed by this app; it is a client of four LLM provider
@@ -150,8 +150,8 @@ flowchart LR
 
 **Layering:** `app.py` (UI) → `graph.py` (orchestration) → `agents/` +
 `retriever/` (domain logic) → `db/` + `config.py` (persistence/env).
-Nothing in `agents/`, `retriever/`, or `db/` imports `app.py` or `graph.py`
-— one-way by convention, not enforced by any import-linter.
+Nothing in `agents/`, `retriever/`, or `db/` imports `app.py` or `graph.py`;
+this is one-way by convention, not enforced by any import-linter.
 
 **Cross-cutting concerns**
 
@@ -166,13 +166,13 @@ Nothing in `agents/`, `retriever/`, or `db/` imports `app.py` or `graph.py`
 
 - **ADR: Query expansion and re-ranking always run on a local model,
   regardless of the selected generation provider.** *Context:* these are
-  retrieval-quality helpers, not user-facing output — sending them to a
+  retrieval-quality helpers, not user-facing output, so sending them to a
   paid remote provider would add cost/latency for no visible benefit.
   *Decision:* `_local_llm()` always resolves to Ollama (`agents/nodes.py:53-59`),
   used by `_expand_queries`, `rerank_node`, and `reflection_node`.
   *Consequences:* if no Ollama model is pulled, these steps degrade to
   no-ops (unexpanded query, unranked truncation, no reflection) rather than
-  failing — documented explicitly in the module docstring
+  failing; this is documented explicitly in the module docstring
   (`agents/nodes.py:4-8`).
 - **ADR: SQLite is the single source of truth for the knowledge graph;
   `networkx` is a disposable view.** *Context:* keeping two persistence
@@ -181,18 +181,18 @@ Nothing in `agents/`, `retriever/`, or `db/` imports `app.py` or `graph.py`
   `networkx.DiGraph` from SQLite on every call, with no caching
   (`db/graph_store.py:108-121`). *Consequences:* correctness is trivially
   guaranteed (one source of truth); the tradeoff is rebuilding the whole
-  graph per query — acceptable at personal-KB scale, an explicit "not yet
+  graph per query, acceptable at personal-KB scale, an explicit "not yet
   a scaling concern" choice consistent with the BM25 rebuild-per-query
   `ponytail:` comment in the neighboring `retriever/keyword.py:4-6`.
-- **ADR: Reflection is informational only — no retry loop.** *Context:* an
+- **ADR: Reflection is informational only, with no retry loop.** *Context:* an
   automatic retry-on-low-confidence loop risks unbounded LLM cost.
   *Decision:* `reflection_node` sets `needs_retry` but nothing in `graph.py`
-  branches on it — the edge from `reflection` goes straight to `END`
+  branches on it; the edge from `reflection` goes straight to `END`
   (`graph.py:38`, `agents/nodes.py:179-181`). *Consequences:* a flagged
   "insufficient" answer still reaches the user as final; the flag is
   surface-level UI signal only, not enforced control flow.
 
-**Governance:** none — no CODEOWNERS, no branch protection, no CI to
+**Governance:** none. No CODEOWNERS, no branch protection, and no CI to
 protect against in the first place.
 
 **How to add a feature:** add or modify a node function in
@@ -208,12 +208,12 @@ same change (convention only, nothing enforces it).
 Six nodes in a strict linear chain, no conditional edges
 (`graph.py:33-39`). Unlike a typical LangGraph app with a `MemorySaver`,
 this graph is compiled once with a persistent `SqliteSaver`
-(`graph.py:41`, `db/checkpointer.py:21-26`) — conversation state survives
+(`graph.py:41`, `db/checkpointer.py:21-26`): conversation state survives
 not just Streamlit reruns but full process restarts, keyed by
 `state["messages"]`'s `add_messages` reducer (`state.py:7,34`) and a
 `thread_id` the UI manages as a dropdown of past conversations
 (`app.py:194-198`). Every other `KBState` field is fully overwritten by
-each node's return dict — only `messages` accumulates.
+each node's return dict; only `messages` accumulates.
 
 ### 2. Hybrid + graph-augmented retrieval (`retriever/keyword.py`, `retriever/graph_rag.py`, `agents/nodes.py::retrieval_node`)
 
@@ -225,7 +225,7 @@ rank (`retriever/keyword.py:73-82`, weight from `HYBRID_VECTOR_WEIGHT`).
 Second, `graph_augmented_sources` extracts capitalized-phrase candidate
 entities from the raw query, matches them against known graph entities,
 and BFS-traverses `GRAPH_HOP_DEPTH` hops to find connected source documents
-(`retriever/graph_rag.py:16-35`, `db/graph_store.py:124-145`) — this is
+(`retriever/graph_rag.py:16-35`, `db/graph_store.py:124-145`). This is
 what lets a question surface a document that shares no vocabulary with the
 query at all, as long as it shares a graph-connected entity. All three
 signals merge into one `dict` keyed by chunk id (`agents/nodes.py:110-126`),
@@ -235,7 +235,7 @@ sorted by score and truncated to `RETRIEVAL_TOP_K` before re-ranking.
 
 `index_folder` is idempotent and incremental: `metadata.is_unchanged()`
 does a cheap mtime+size check before ever touching file content
-(`db/metadata.py:63-66`, `indexer/pipeline.py:137-138`) — a full
+(`db/metadata.py:63-66`, `indexer/pipeline.py:137-138`). A full
 content-hash comparison only happens implicitly, since a changed
 mtime/size always triggers a full re-index of that file rather than a
 separate hash check. Re-indexing a file first deletes its prior chunks,
@@ -244,7 +244,7 @@ re-adding, so a file's knowledge-graph contribution never double-counts
 across re-indexes. Files removed from a watched folder are detected by
 diffing the current scan against `metadata.list_files()` and cleaned up
 symmetrically (`indexer/pipeline.py:150-154`). `deep_extraction` (the
-entity/relation/annotation pass) is deliberately optional per-run — cutting
+entity/relation/annotation pass) is deliberately optional per-run: cutting
 it saves one LLM call per chunk since it's a "bonus layer, not load-bearing
 for retrieval" (`agents/extraction.py:6-9`).
 
@@ -252,21 +252,21 @@ for retrieval" (`agents/extraction.py:6-9`).
 
 | Claim area | Confidence |
 |---|---|
-| LangGraph pipeline structure, node responsibilities | High — read directly from `graph.py`, `agents/nodes.py` |
-| No CI/tests/lint config exists | High — confirmed by directory listing and `pyproject.toml` contents, not inference |
-| Hybrid retrieval and graph-augmented retrieval mechanics | High — read directly from `retriever/keyword.py`, `retriever/graph_rag.py`, `db/graph_store.py` |
-| `sonnet-5`/`grok-4.6` being unreachable-but-intentional placeholders | High — unreachability confirmed via `grep`; intent confirmed with the maintainer |
-| Incremental indexing correctness under concurrent/interrupted runs | Inferred — no explicit locking observed in `db/metadata.py`/`db/graph_store.py`; each SQLite connection is opened and closed per call, which is safe for the single-process Streamlit deployment this app targets but not analyzed for concurrent writers |
+| LangGraph pipeline structure, node responsibilities | High: read directly from `graph.py`, `agents/nodes.py` |
+| No CI/tests/lint config exists | High: confirmed by directory listing and `pyproject.toml` contents, not inference |
+| Hybrid retrieval and graph-augmented retrieval mechanics | High: read directly from `retriever/keyword.py`, `retriever/graph_rag.py`, `db/graph_store.py` |
+| `sonnet-5`/`grok-4.6` being unreachable-but-intentional placeholders | High: unreachability confirmed via `grep`; intent confirmed with the maintainer |
+| Incremental indexing correctness under concurrent/interrupted runs | Inferred: no explicit locking observed in `db/metadata.py`/`db/graph_store.py`; each SQLite connection is opened and closed per call, which is safe for the single-process Streamlit deployment this app targets but not analyzed for concurrent writers |
 
 ## Footnotes
 
-- `README.md` — features, tech stack, setup, env vars, "How it works" narrative
-- `graph.py` — LangGraph graph construction and singleton accessor
-- `state.py` — `KBState` and nested schemas
-- `config.py` — env var reads, paths, model catalog, tunables
-- `app.py` — Streamlit UI and pipeline wiring
-- `agents/models.py`, `agents/nodes.py`, `agents/extraction.py`, `agents/proactive.py` — provider factory, graph nodes, extraction, proactive features
-- `indexer/pipeline.py`, `indexer/loaders.py`, `indexer/code_parser.py`, `indexer/image_loader.py`, `indexer/audio_loader.py`, `indexer/browser_history.py` — indexing pipeline and per-source-type loaders
-- `retriever/store.py`, `retriever/keyword.py`, `retriever/rerank.py`, `retriever/temporal.py`, `retriever/graph_rag.py` — retrieval subsystem
-- `db/metadata.py`, `db/graph_store.py`, `db/annotations.py`, `db/checkpointer.py` — persistence
-- `utils.py` — hashing, snippets, date helpers
+- `README.md`: features, tech stack, setup, env vars, "How it works" narrative
+- `graph.py`: LangGraph graph construction and singleton accessor
+- `state.py`: `KBState` and nested schemas
+- `config.py`: env var reads, paths, model catalog, tunables
+- `app.py`: Streamlit UI and pipeline wiring
+- `agents/models.py`, `agents/nodes.py`, `agents/extraction.py`, `agents/proactive.py`: provider factory, graph nodes, extraction, proactive features
+- `indexer/pipeline.py`, `indexer/loaders.py`, `indexer/code_parser.py`, `indexer/image_loader.py`, `indexer/audio_loader.py`, `indexer/browser_history.py`: indexing pipeline and per-source-type loaders
+- `retriever/store.py`, `retriever/keyword.py`, `retriever/rerank.py`, `retriever/temporal.py`, `retriever/graph_rag.py`: retrieval subsystem
+- `db/metadata.py`, `db/graph_store.py`, `db/annotations.py`, `db/checkpointer.py`: persistence
+- `utils.py`: hashing, snippets, date helpers

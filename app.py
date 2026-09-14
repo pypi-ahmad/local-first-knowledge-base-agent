@@ -1,4 +1,10 @@
-"""Streamlit UI for the local-first knowledge-base agent."""
+"""Streamlit UI for the local-first knowledge-base agent.
+
+Wires widgets to session state and to the indexing/retrieval/graph modules;
+must not reimplement retrieval or answer-generation logic itself — the chat
+flow always goes through graph.get_graph(). Read config.py next for paths/
+env, then graph.py for how a chat turn flows end to end.
+"""
 
 from __future__ import annotations
 

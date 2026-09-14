@@ -3,6 +3,10 @@ the knowledge graph a few hops, and surface which additional source documents
 are connected — even if they don't lexically/semantically match the query
 text directly. The retrieval node then pulls real chunks from those sources
 so answers can connect information across documents.
+
+Must not fetch document content itself — only resolves which source paths
+are graph-connected. Read agents/nodes.py next: retrieval_node does the
+actual chunk fetch for the sources this module returns.
 """
 
 from __future__ import annotations

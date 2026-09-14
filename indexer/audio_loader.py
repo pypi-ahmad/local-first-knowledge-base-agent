@@ -2,6 +2,8 @@
 
 ponytail: CPU int8 inference is the local-first default; slow on long files.
 Set WHISPER_DEVICE=cuda in .env if the machine has a supported GPU.
+
+Read pipeline.py next — `_load_chunks` calls transcribe_audio for audio files.
 """
 
 from __future__ import annotations

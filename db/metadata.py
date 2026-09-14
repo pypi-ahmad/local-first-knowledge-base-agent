@@ -1,7 +1,10 @@
 """SQLite-backed metadata store for incremental indexing.
 
 Tracks one row per indexed file (mtime + content hash) so re-scans only
-touch files that actually changed.
+touch files that actually changed. Must not be treated as the source of
+truth for vector/graph data — those live in Chroma (retriever/store.py) and
+db/graph_store.py; this module only tracks what's been indexed and when.
+Read indexer/pipeline.py next to see how is_unchanged gates re-indexing.
 """
 
 from __future__ import annotations

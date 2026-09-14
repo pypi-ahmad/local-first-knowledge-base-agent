@@ -1,6 +1,10 @@
 """Incremental indexing orchestration: scan -> load -> chunk -> extract ->
 embed+store -> track metadata. Handles notes/code/PDFs/images/audio and
 browser history, plus deletions of files removed from a watched folder.
+
+Must not implement its own text extraction or chunking — that's loaders.py /
+code_parser.py / image_loader.py / audio_loader.py. Read app.py next to see
+how index_folder and index_browser_history are invoked from the UI.
 """
 
 from __future__ import annotations
@@ -105,6 +109,10 @@ def _index_single_file(path: Path, vs, llm: Optional[BaseChatModel], deep_extrac
             _extract_and_store_graph(llm, item["content"], path_str, date_str)
 
     store.add_documents(vs, texts, metadatas, ids)
+    # Regular re-index decisions use mtime+size (metadata.is_unchanged), not
+    # content_hash — it's stored for reference only. Still needs a real value
+    # even when extraction produced no chunks (e.g. OCR/transcription found
+    # nothing), so fall back to hashing the raw file instead of an empty string.
     content_hash = utils.sha256_text("".join(texts)) if texts else utils.sha256_file(path)
     metadata.upsert_file_record(path_str, stat.st_mtime, stat.st_size, content_hash, source_type, len(texts))
     return len(texts)
