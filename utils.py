@@ -1,4 +1,8 @@
-"""Small shared helpers: hashing, snippets, dates. No project-specific logic."""
+"""Small shared helpers: hashing, snippets, dates. No project-specific logic.
+
+Must not import from agents/db/indexer/retriever — they all import this, and
+a back-import would cycle. Read indexer/pipeline.py next for the main caller.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,9 @@
-"""Environment, paths, and model catalog. Single source of truth for config."""
+"""Environment, paths, and model catalog. Single source of truth for config.
+
+Must not import other project modules or make network calls — every other
+module imports this one, so a cycle here would break the app on import.
+Read state.py next for the data shapes that flow through the graph.py pipeline.
+"""
 
 from __future__ import annotations
 

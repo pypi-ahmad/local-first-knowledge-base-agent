@@ -3,6 +3,10 @@
 A module-level singleton: Streamlit reimports this module once per process
 (reruns don't re-trigger imports), so the same connection is reused across
 reruns and sessions, giving conversations memory across app restarts.
+Must not be constructed more than once per process — call get_checkpointer(),
+never SqliteSaver(...) directly, or reruns will open duplicate connections.
+
+Read graph.py next — get_checkpointer() feeds graph.compile(checkpointer=...).
 """
 
 from __future__ import annotations

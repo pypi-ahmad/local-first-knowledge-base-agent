@@ -6,6 +6,9 @@ which provider/model the user picked for the final answer — they're
 retrieval-quality helpers, not the user-facing generation step, so they stay
 local per the app's "local models for the majority of embedding, retrieval,
 and generation" mandate.
+
+Must not perform indexing/writes — that's indexer/pipeline.py. Read
+retriever/keyword.py next for how hybrid_search actually scores candidates.
 """
 
 from __future__ import annotations
@@ -107,6 +110,9 @@ def retrieval_node(state: KBState) -> dict:
     vs = store.get_vectorstore(embeddings)
     where = store.build_where_filter(state["filters"])
 
+    # Dedup key: chunk_id when present, else a source+content-prefix composite.
+    # Same fallback convention as retriever.keyword.reciprocal_rank_fusion —
+    # keep both in sync if the key format ever changes.
     candidates: dict[str, RetrievedDoc] = {}
     for expanded_query in _expand_queries(state, state["query"]):
         for doc in keyword.hybrid_search(vs, expanded_query, k=config.RETRIEVAL_TOP_K, where=where):

@@ -3,6 +3,9 @@ vector search. BM25 index is rebuilt per query from Chroma's stored docs.
 
 ponytail: rebuild-per-query is O(n) over the collection; fine at personal-KB
 scale (thousands of chunks). Persist/cache the index if the corpus grows large.
+
+Read agents/nodes.py next — retrieval_node is the caller and merges its own
+multi-query results with the same fallback-key convention used below.
 """
 
 from __future__ import annotations
@@ -57,6 +60,9 @@ def reciprocal_rank_fusion(
 
     for docs, weight in zip(ranked_lists, weights):
         for rank, doc in enumerate(docs):
+            # doc["id"] is the chunk_id set at index time (pipeline.py); the
+            # composite fallback only matters for docs missing that metadata
+            # field, so two such docs don't collapse into one fused entry.
             key = doc["id"] or f"{doc['source']}::{doc['content'][:50]}"
             fused_scores[key] = fused_scores.get(key, 0.0) + weight / (rank + _RRF_K)
             docs_by_id.setdefault(key, doc)

@@ -1,4 +1,9 @@
-"""File discovery, text extraction, and chunking for notes/code/PDFs/images/audio."""
+"""File discovery, text extraction, and chunking for notes/code/PDFs/images/audio.
+
+Must not perform LLM/network calls itself — image and audio extraction that
+need those live in image_loader.py and audio_loader.py. Read pipeline.py
+next to see how these pieces combine into one indexing pass.
+"""
 
 from __future__ import annotations
 

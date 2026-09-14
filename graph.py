@@ -1,6 +1,7 @@
 """LangGraph workflow wiring: query understanding -> retrieval -> rerank ->
 generation -> citation -> reflection. Node logic lives in agents/nodes.py;
-this module only builds and compiles the graph.
+this module must not contain that logic itself, only build and compile the
+graph. Read agents/nodes.py next for what each step actually does.
 """
 
 from __future__ import annotations

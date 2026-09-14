@@ -3,6 +3,8 @@
 ponytail: Python only. Other languages fall back to the generic paragraph
 chunker in loaders.py — add tree-sitter if structure-awareness for other
 languages is actually needed.
+
+Read pipeline.py next — `_load_chunks` only calls this for .py files.
 """
 
 from __future__ import annotations

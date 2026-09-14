@@ -4,6 +4,8 @@ ponytail: LLM-based rerank (one batched structured call over all candidates)
 instead of a cross-encoder model — avoids a multi-GB torch/sentence-transformers
 install for a local-first app. Swap in a real cross-encoder if measured
 precision is insufficient.
+
+Read agents/nodes.py next — rerank_node calls this after retrieval_node.
 """
 
 from __future__ import annotations

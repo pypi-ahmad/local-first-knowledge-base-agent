@@ -1,5 +1,8 @@
 """Resolve relative time expressions ("last month", "in January", "recently")
 into an ISO date range, so retrieval can filter on stored document dates.
+
+Read agents/nodes.py next — query_understanding_node calls parse_date_range
+before retrieval runs.
 """
 
 from __future__ import annotations

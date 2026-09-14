@@ -3,6 +3,8 @@ into an in-memory networkx graph for traversal (GraphRAG-style retrieval).
 
 sqlite is the single source of truth; networkx is only ever a rebuilt view
 over it, so there is no second persistence format to keep in sync.
+
+Read retriever/graph_rag.py next for how this graph is used at query time.
 """
 
 from __future__ import annotations

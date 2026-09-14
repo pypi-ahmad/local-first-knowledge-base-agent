@@ -4,6 +4,9 @@ Reuses the Ollama dependency the app already requires instead of adding a
 separate OCR/captioning stack (pytesseract + Tesseract binary, or a
 dedicated captioning model). Requires the user to have pulled a
 vision-capable model (default config.OLLAMA_VISION_MODEL, e.g. "qwen3-vl:4b").
+
+Read loaders.py next — its `_extract_pdf_page` falls back to
+ocr_caption_image_bytes for scanned PDF pages with no extractable text.
 """
 
 from __future__ import annotations

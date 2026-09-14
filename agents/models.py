@@ -1,6 +1,8 @@
 """Model provider factory: Ollama (local, dynamic), OpenAI-compatible, Agnes
 AI, and Google Gemini. Embeddings are always local (Ollama) per the app's
-local-first mandate.
+local-first mandate. Local-only enforcement lives entirely in
+build_chat_model's local_only check; callers must not bypass it by
+constructing a remote chat model another way. Read agents/nodes.py next.
 """
 
 from __future__ import annotations
