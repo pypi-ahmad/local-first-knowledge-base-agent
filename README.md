@@ -1,6 +1,6 @@
 # Local-First Knowledge Base Agent
 
-A personal, privacy-first knowledge base agent that indexes your notes, code, PDFs, images, audio, and browser history, then answers questions about them — with citations, temporal reasoning, and a local knowledge graph — using LangGraph and Streamlit.
+A personal, privacy-first knowledge base agent that indexes your notes, code, PDFs, images, audio, and browser history, then answers questions about them (with citations, temporal reasoning, and a local knowledge graph) using LangGraph and Streamlit.
 
 ![Python 3.14+](https://img.shields.io/badge/python-3.14%2B-blue)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b)
@@ -37,14 +37,14 @@ A personal, privacy-first knowledge base agent that indexes your notes, code, PD
 **Retrieval**
 - Hybrid search: vector similarity (Chroma) + BM25 keyword search, combined with reciprocal rank fusion.
 - Graph-augmented retrieval (GraphRAG-style): entities mentioned in a query are traversed in the knowledge graph to pull in related documents that wouldn't otherwise match lexically or semantically.
-- Query expansion (LLM-generated paraphrases) and LLM-based re-ranking of candidates — both always run on a local Ollama model, regardless of which provider is selected for the final answer.
+- Query expansion (LLM-generated paraphrases) and LLM-based re-ranking of candidates: both always run on a local Ollama model, regardless of which provider is selected for the final answer.
 - Temporal filtering: relative dates ("last month", "yesterday", "recently"), explicit months/quarters ("in January", "Q1 2026"), and entity-anchored ranges ("before Project Atlas started").
 
 **Conversational agent**
 - A 6-node LangGraph workflow: query understanding → retrieval → re-rank → generation → citation → reflection.
 - Cross-session conversation memory via a SQLite-backed LangGraph checkpointer (multiple threads, persists across restarts).
 - Inline `[n]` citations resolved to source file, snippet, type, and date.
-- A reflection step flags answers that look incomplete or unsupported (informational only — it doesn't loop/retry).
+- A reflection step flags answers that look incomplete or unsupported (informational only; it doesn't loop or retry).
 
 **Multi-provider model routing**
 - **Ollama** (local): models are listed dynamically from whatever you've pulled.
@@ -65,7 +65,7 @@ A personal, privacy-first knowledge base agent that indexes your notes, code, PD
 
 ## Demo / Screenshots
 
-_Not yet included — run the app locally (see below) to try it against your own files._
+_Not yet included. Run the app locally (see below) to try it against your own files._
 
 ## Tech stack
 
@@ -124,7 +124,7 @@ _Not yet included — run the app locally (see below) to try it against your own
 
 **Requirements:** Windows, [uv](https://docs.astral.sh/uv/) (installed automatically by `run.cmd` if missing), and [Ollama](https://ollama.com) running locally with at least one chat model and one embedding model pulled (e.g. `ollama pull qwen3.5:0.8b && ollama pull embeddinggemma:300m`).
 
-### Option 1 — one-click (recommended)
+### Option 1: one-click (recommended)
 
 Double-click **`run.cmd`**. It will:
 1. Install `uv` if it isn't already on your PATH.
@@ -132,7 +132,7 @@ Double-click **`run.cmd`**. It will:
 3. Create `.env` from `.env.example` on first run (edit it to add any API keys you use).
 4. Launch the app at **http://localhost:8943**.
 
-### Option 2 — manual
+### Option 2: manual
 
 ```bash
 uv sync
@@ -163,7 +163,7 @@ See `.env.example` for a ready-to-copy template.
 1. Launch the app (see above) and open http://localhost:8943.
 2. In the sidebar, add one or more folders to index, optionally include browser history, and click **Re-index now**. Progress is shown live.
 3. Pick a provider/model and an embedding model.
-4. Ask a question in the **Chat** tab — e.g. *"What did we decide about the vector store last month?"* Answers cite sources inline; expand **Sources** to see snippets.
+4. Ask a question in the **Chat** tab, e.g. *"What did we decide about the vector store last month?"* Answers cite sources inline; expand **Sources** to see snippets.
 5. Use **Timeline & digest** for daily/weekly digests, repeated-mention suggestions, and conflict checks; **Knowledge report** to generate and export a topic summary; **Privacy & sources** to audit or purge what's indexed.
 
 ## How it works
@@ -192,12 +192,12 @@ Indexing runs the same file through: extraction (text/PDF/image/audio) → chunk
 
 Tunables live in `config.py`:
 
-- `CHUNK_SIZE` / `CHUNK_OVERLAP` — chunking granularity for notes/code/PDFs.
-- `RETRIEVAL_TOP_K` / `RERANK_TOP_K` — candidates retrieved vs. kept after re-ranking.
-- `GRAPH_HOP_DEPTH` — how many hops the graph-augmented retrieval traverses.
-- `QUERY_EXPANSION_COUNT` — number of paraphrases generated per query.
-- `HYBRID_VECTOR_WEIGHT` — vector vs. BM25 weighting in the fusion score.
-- `PRICING_USD_PER_1M` — reference pricing shown next to the model picker (approximate, not billing-accurate).
+- `CHUNK_SIZE` / `CHUNK_OVERLAP`: chunking granularity for notes/code/PDFs.
+- `RETRIEVAL_TOP_K` / `RERANK_TOP_K`: candidates retrieved vs. kept after re-ranking.
+- `GRAPH_HOP_DEPTH`: how many hops the graph-augmented retrieval traverses.
+- `QUERY_EXPANSION_COUNT`: number of paraphrases generated per query.
+- `HYBRID_VECTOR_WEIGHT`: vector vs. BM25 weighting in the fusion score.
+- `PRICING_USD_PER_1M`: reference pricing shown next to the model picker (approximate, not billing-accurate).
 
 ## Examples
 
@@ -209,7 +209,7 @@ Tunables live in `config.py`:
 
 ## Future improvements
 
-These are deliberate scope decisions, not oversights — noted here as upgrade paths:
+These are deliberate scope decisions, not oversights, noted here as upgrade paths:
 
 - Swap the LLM-based re-ranker for a real cross-encoder if precision needs it.
 - Add tree-sitter for structure-aware chunking of non-Python languages.
